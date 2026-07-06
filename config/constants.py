@@ -4,9 +4,9 @@ from enum import Enum
 
 class Tier(str, Enum):
     ULTRA_CHEAP = "ultra_cheap"
-    MID         = "mid"
-    QUALITY     = "quality"
-    POWER       = "power"
+    MID = "mid"
+    QUALITY = "quality"
+    POWER = "power"
 
 
 @dataclass(frozen=True)
@@ -61,25 +61,25 @@ MODELS: dict[Tier, ModelMeta] = {
 
 
 class TaskType(str, Enum):
-    SUMMARIZATION   = "summarization"
-    CLASSIFICATION  = "classification"
-    EXTRACTION      = "extraction"
-    REASONING       = "reasoning"
+    SUMMARIZATION = "summarization"
+    CLASSIFICATION = "classification"
+    EXTRACTION = "extraction"
+    REASONING = "reasoning"
     CODE_GENERATION = "code_generation"
-    CREATIVE        = "creative"
-    QA              = "qa"
-    UNKNOWN         = "unknown"
+    CREATIVE = "creative"
+    QA = "qa"
+    UNKNOWN = "unknown"
 
 
 TASK_DEFAULT_TIER: dict[TaskType, Tier] = {
-    TaskType.CLASSIFICATION:  Tier.ULTRA_CHEAP,
-    TaskType.EXTRACTION:      Tier.ULTRA_CHEAP,
-    TaskType.SUMMARIZATION:   Tier.MID,
-    TaskType.QA:              Tier.MID,
-    TaskType.CREATIVE:        Tier.QUALITY,
+    TaskType.CLASSIFICATION: Tier.ULTRA_CHEAP,
+    TaskType.EXTRACTION: Tier.ULTRA_CHEAP,
+    TaskType.SUMMARIZATION: Tier.MID,
+    TaskType.QA: Tier.MID,
+    TaskType.CREATIVE: Tier.QUALITY,
     TaskType.CODE_GENERATION: Tier.QUALITY,
-    TaskType.REASONING:       Tier.POWER,
-    TaskType.UNKNOWN:         Tier.MID,
+    TaskType.REASONING: Tier.POWER,
+    TaskType.UNKNOWN: Tier.MID,
 }
 
 
