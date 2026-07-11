@@ -28,7 +28,11 @@ class CacheLookupResult:
 
 class SemanticCache:
 
-    def __init__(self, similarity_high: float = 0.92, similarity_mid: float = 0.75):
+    def __init__(
+        self,
+        similarity_high: float = 0.92,
+        similarity_mid: float = 0.75,
+    ):
         self.similarity_high = similarity_high
         self.similarity_mid = similarity_mid
         self._entries: list[CacheEntry] = []
@@ -37,7 +41,9 @@ class SemanticCache:
     def _load_model(self):
         if self._model is None:
             logger.info("[Cache] Loading sentence-transformer model...")
-            from sentence_transformers import SentenceTransformer
+            from sentence_transformers import (
+                SentenceTransformer,
+            )
 
             self._model = SentenceTransformer("all-MiniLM-L6-v2")
             logger.info("[Cache] Model loaded.")
@@ -74,7 +80,13 @@ class SemanticCache:
 
         return CacheLookupResult(found=False, similarity_score=best_score)
 
-    def store(self, query: str, response: str, tier_used: str, cost_usd: float) -> str:
+    def store(
+        self,
+        query: str,
+        response: str,
+        tier_used: str,
+        cost_usd: float,
+    ) -> str:
         emb = self._embed(query)
         entry = CacheEntry(
             query_id=str(uuid.uuid4())[:8],

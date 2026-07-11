@@ -13,7 +13,10 @@ class AnthropicProvider(BaseProvider):
         self._client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
     def call(
-        self, prompt: str, system: str = "", max_tokens: int = 1024
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
     ) -> LLMResponse:
         start = time.time()
 

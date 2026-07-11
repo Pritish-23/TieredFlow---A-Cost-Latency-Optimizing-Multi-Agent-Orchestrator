@@ -1,0 +1,10 @@
+query,task_type_detected,tier_selected,served_from_cache,cost_usd,latency_ms,correct_task_type,correct_tier,response_length
+Classify this email as spam or not spam.,TaskType.CLASSIFICATION,Tier.ULTRA_CHEAP,False,5e-06,398,True,True,116
+Extract all dates mentioned in this text.,TaskType.EXTRACTION,Tier.ULTRA_CHEAP,False,5e-06,211,True,True,131
+Summarize the key points of this article.,TaskType.SUMMARIZATION,Tier.MID,False,0.000104,1734,True,True,277
+What is the capital of France?,TaskType.QA,Tier.MID,False,1.8e-05,665,True,True,31
+Write a Python function to reverse a string.,TaskType.CODE_GENERATION,Tier.QUALITY,False,6.3e-05,3221,True,True,398
+Explain why inflation affects interest rates.,TaskType.REASONING,Tier.POWER,False,0.00474,7234,True,True,1311
+Classify this review as positive or negative.,TaskType.CLASSIFICATION,Tier.ULTRA_CHEAP,False,5e-06,279,True,True,126
+Summarize what neural networks are.,TaskType.SUMMARIZATION,Tier.MID,False,0.000289,3058,True,True,1084
+Classify this email as spam or not spam.,None,None,True,0.0,68,False,False,116

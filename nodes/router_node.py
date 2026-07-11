@@ -1,6 +1,10 @@
 import logging
 
-from config.constants import TASK_DEFAULT_TIER, TaskType, Tier
+from config.constants import (
+    TASK_DEFAULT_TIER,
+    TaskType,
+    Tier,
+)
 from core.state import TieredFlowState
 
 logger = logging.getLogger(__name__)
@@ -9,24 +13,82 @@ logger = logging.getLogger(__name__)
 _TASK_PATTERNS: list[tuple[TaskType, list[str]]] = [
     (
         TaskType.CLASSIFICATION,
-        ["classify", "categorize", "label", "is this", "what type"],
+        [
+            "classify",
+            "categorize",
+            "label",
+            "is this",
+            "what type",
+        ],
     ),
-    (TaskType.EXTRACTION, ["extract", "pull out", "find all", "list all", "get the"]),
-    (TaskType.SUMMARIZATION, ["summarize", "summary", "tldr", "brief", "shorten"]),
+    (
+        TaskType.EXTRACTION,
+        [
+            "extract",
+            "pull out",
+            "find all",
+            "list all",
+            "get the",
+        ],
+    ),
+    (
+        TaskType.SUMMARIZATION,
+        [
+            "summarize",
+            "summary",
+            "tldr",
+            "brief",
+            "shorten",
+        ],
+    ),
     (
         TaskType.CODE_GENERATION,
-        ["write code", "implement", "function", "class", "script", "debug"],
+        [
+            "write code",
+            "implement",
+            "function",
+            "class",
+            "script",
+            "debug",
+        ],
     ),
     (
         TaskType.REASONING,
-        ["why", "explain", "analyze", "compare", "evaluate", "reason"],
+        [
+            "why",
+            "explain",
+            "analyze",
+            "compare",
+            "evaluate",
+            "reason",
+        ],
     ),
-    (TaskType.CREATIVE, ["write a story", "poem", "creative", "imagine", "generate"]),
-    (TaskType.QA, ["what is", "who is", "when did", "how do", "define"]),
+    (
+        TaskType.CREATIVE,
+        [
+            "write a story",
+            "poem",
+            "creative",
+            "imagine",
+            "generate",
+        ],
+    ),
+    (
+        TaskType.QA,
+        [
+            "what is",
+            "who is",
+            "when did",
+            "how do",
+            "define",
+        ],
+    ),
 ]
 
 
-def task_classifier_node(state: TieredFlowState) -> TieredFlowState:
+def task_classifier_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     query_lower = state["user_query"].lower()
     detected = TaskType.UNKNOWN
 

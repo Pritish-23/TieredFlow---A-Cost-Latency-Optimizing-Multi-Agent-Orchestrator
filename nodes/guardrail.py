@@ -7,7 +7,9 @@ from core.state import TieredFlowState
 logger = logging.getLogger(__name__)
 
 
-def guardrail_node(state: TieredFlowState) -> TieredFlowState:
+def guardrail_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     query = state["user_query"].lower()
 
     for pattern in GUARDRAIL_BLOCKED_PATTERNS:

@@ -1,18 +1,26 @@
-import pytest
-from config.constants import Tier, TaskType, MODELS, TASK_DEFAULT_TIER
+from cache.semantic_cache import SemanticCache
+from config.constants import (
+    MODELS,
+    TASK_DEFAULT_TIER,
+    TaskType,
+    Tier,
+)
 from core.state import initial_state
 from nodes.guardrail import guardrail_node
-from nodes.router_node import task_classifier_node, router_node
-from cache.semantic_cache import SemanticCache
-
+from nodes.router_node import (
+    router_node,
+    task_classifier_node,
+)
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def make_state(query: str, budget: float = 1.0):
     return initial_state(query, "test-session", budget)
 
 
 # ── Guardrail ─────────────────────────────────────────────────────────────────
+
 
 def test_guardrail_passes_safe_query():
     state = make_state("What is the capital of France?")
@@ -35,6 +43,7 @@ def test_guardrail_blocks_short_query():
 
 # ── Task Classifier ───────────────────────────────────────────────────────────
 
+
 def test_classifier_detects_summarization():
     state = make_state("Summarize this article for me.")
     result = task_classifier_node(state)
@@ -54,6 +63,7 @@ def test_classifier_detects_classification():
 
 
 # ── Router ────────────────────────────────────────────────────────────────────
+
 
 def test_router_selects_ultra_cheap_for_classification():
     state = make_state("Classify this.")
@@ -77,6 +87,7 @@ def test_router_downgrades_power_on_low_budget():
 
 
 # ── Semantic Cache ────────────────────────────────────────────────────────────
+
 
 def test_cache_empty_returns_no_match():
     cache = SemanticCache()
@@ -110,6 +121,7 @@ def test_cache_no_match_below_threshold():
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
+
 
 def test_all_tiers_have_model_meta():
     for tier in Tier:

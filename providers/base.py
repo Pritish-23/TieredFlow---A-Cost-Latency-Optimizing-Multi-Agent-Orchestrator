@@ -16,7 +16,10 @@ class BaseProvider(ABC):
 
     @abstractmethod
     def call(
-        self, prompt: str, system: str = "", max_tokens: int = 1024
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
     ) -> LLMResponse: ...
 
     @abstractmethod

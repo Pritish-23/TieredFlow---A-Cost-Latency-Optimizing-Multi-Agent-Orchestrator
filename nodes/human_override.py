@@ -8,7 +8,9 @@ from core.state import TieredFlowState
 logger = logging.getLogger(__name__)
 
 
-def human_cache_decision_node(state: TieredFlowState) -> TieredFlowState:
+def human_cache_decision_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     score = state["cache_similarity_score"]
 
     logger.info(f"[HITL] Interrupting for cache decision. score={score:.4f}")
@@ -54,7 +56,9 @@ def route_after_cache_hitl(state: TieredFlowState) -> str:
     return "task_classifier"
 
 
-def human_tier_override_node(state: TieredFlowState) -> TieredFlowState:
+def human_tier_override_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     logger.info(
         f"[HITL] Interrupting for tier override. Current: {state['selected_tier']}"
     )

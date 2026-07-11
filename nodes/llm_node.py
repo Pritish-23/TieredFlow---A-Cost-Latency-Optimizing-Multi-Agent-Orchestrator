@@ -9,7 +9,9 @@ from providers import get_provider
 logger = logging.getLogger(__name__)
 
 
-def llm_call_node(state: TieredFlowState) -> TieredFlowState:
+def llm_call_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     tier = state["selected_tier"]
     meta = MODELS[tier]
     provider = get_provider(tier)

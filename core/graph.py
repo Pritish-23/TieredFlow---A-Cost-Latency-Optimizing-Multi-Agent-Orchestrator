@@ -7,7 +7,10 @@ from nodes.cache_node import (
     cache_lookup_node,
     route_after_cache,
 )
-from nodes.guardrail import guardrail_node, route_after_guardrail
+from nodes.guardrail import (
+    guardrail_node,
+    route_after_guardrail,
+)
 from nodes.human_override import (
     human_cache_decision_node,
     human_tier_override_node,
@@ -88,7 +91,10 @@ def build_graph():
     checkpointer = MemorySaver()
     return builder.compile(
         checkpointer=checkpointer,
-        interrupt_before=["human_cache_decision", "human_tier_override"],
+        interrupt_before=[
+            "human_cache_decision",
+            "human_tier_override",
+        ],
     )
 
 

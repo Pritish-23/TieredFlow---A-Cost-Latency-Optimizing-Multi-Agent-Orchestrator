@@ -7,7 +7,9 @@ from core.state import TieredFlowState
 logger = logging.getLogger(__name__)
 
 
-def cache_lookup_node(state: TieredFlowState) -> TieredFlowState:
+def cache_lookup_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     cache = get_cache()
     result = cache.lookup(state["user_query"])
 
@@ -45,7 +47,9 @@ def route_after_cache(state: TieredFlowState) -> str:
     return "human_cache_decision"
 
 
-def auto_serve_cache_node(state: TieredFlowState) -> TieredFlowState:
+def auto_serve_cache_node(
+    state: TieredFlowState,
+) -> TieredFlowState:
     logger.info("[Cache] Auto-serving cached response.")
     return {
         **state,

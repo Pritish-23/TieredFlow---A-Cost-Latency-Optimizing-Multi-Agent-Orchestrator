@@ -13,7 +13,10 @@ class OpenAIProvider(BaseProvider):
         self._client = OpenAI(api_key=settings.openai_api_key)
 
     def call(
-        self, prompt: str, system: str = "", max_tokens: int = 1024
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
     ) -> LLMResponse:
         start = time.time()
 
@@ -21,7 +24,10 @@ class OpenAIProvider(BaseProvider):
             model=self.model_id,
             max_tokens=max_tokens,
             messages=[
-                {"role": "system", "content": system or "You are a helpful assistant."},
+                {
+                    "role": "system",
+                    "content": system or "You are a helpful assistant.",
+                },
                 {"role": "user", "content": prompt},
             ],
         )

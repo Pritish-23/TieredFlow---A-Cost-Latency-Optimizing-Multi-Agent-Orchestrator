@@ -13,7 +13,10 @@ class GroqProvider(BaseProvider):
         self._client = Groq(api_key=settings.groq_api_key)
 
     def call(
-        self, prompt: str, system: str = "", max_tokens: int = 1024
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
     ) -> LLMResponse:
         start = time.time()
 
@@ -21,7 +24,10 @@ class GroqProvider(BaseProvider):
             model=self.model_id,
             max_tokens=max_tokens,
             messages=[
-                {"role": "system", "content": system or "You are a helpful assistant."},
+                {
+                    "role": "system",
+                    "content": system or "You are a helpful assistant.",
+                },
                 {"role": "user", "content": prompt},
             ],
         )
