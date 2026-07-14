@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str = Field(..., alias="ANTHROPIC_API_KEY")
     openai_api_key: str = Field(..., alias="OPENAI_API_KEY")
     groq_api_key: str = Field(..., alias="GROQ_API_KEY")
+    tavily_api_key: str = Field(..., alias="TAVILY_API_KEY")
 
     # LangSmith
     langchain_tracing_v2: bool = Field(True, alias="LANGCHAIN_TRACING_V2")

@@ -20,3 +20,7 @@ pandas
 
 pytest
 pytest-asyncio
+
+tavily-python
+aiosqlite
+langgraph-checkpoint-sqlite

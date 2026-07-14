@@ -68,6 +68,7 @@ class TaskType(str, Enum):
     CODE_GENERATION = "code_generation"
     CREATIVE = "creative"
     QA = "qa"
+    REALTIME_QA     = "realtime_qa"
     UNKNOWN = "unknown"
 
 
@@ -79,6 +80,7 @@ TASK_DEFAULT_TIER: dict[TaskType, Tier] = {
     TaskType.CREATIVE: Tier.QUALITY,
     TaskType.CODE_GENERATION: Tier.QUALITY,
     TaskType.REASONING: Tier.POWER,
+    TaskType.REALTIME_QA:     Tier.MID,
     TaskType.UNKNOWN: Tier.MID,
 }
 

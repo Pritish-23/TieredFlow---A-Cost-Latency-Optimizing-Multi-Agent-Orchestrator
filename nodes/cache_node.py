@@ -34,8 +34,15 @@ def cache_lookup_node(
 
 
 def route_after_cache(state: TieredFlowState) -> str:
+    from config.constants import TaskType
+
+    # Never serve real-time queries from cache
+    if state.get("task_type") == TaskType.REALTIME_QA:
+        logger.info("[Cache] Bypassing cache for REALTIME_QA query.")
+        return "router"
+
     if not state.get("cache_match_found"):
-        return "task_classifier"
+        return "router"
 
     score = state["cache_similarity_score"]
 

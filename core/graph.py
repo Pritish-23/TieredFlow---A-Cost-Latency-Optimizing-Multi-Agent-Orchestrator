@@ -1,4 +1,5 @@
-from langgraph.checkpoint.memory import MemorySaver
+import sqlite3
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
 
 from core.state import TieredFlowState
@@ -44,7 +45,7 @@ def build_graph():
     builder.add_conditional_edges(
         "guardrail",
         route_after_guardrail,
-        {"cache_lookup": "cache_lookup", "end": END},
+        {"cache_lookup": "task_classifier", "end": END},
     )
 
     # Cache lookup → conditional
@@ -52,7 +53,7 @@ def build_graph():
         "cache_lookup",
         route_after_cache,
         {
-            "task_classifier": "task_classifier",
+            "router": "router",
             "auto_serve_cache": "auto_serve_cache",
             "human_cache_decision": "human_cache_decision",
         },
@@ -69,7 +70,7 @@ def build_graph():
     )
 
     # Task classifier → router
-    builder.add_edge("task_classifier", "router")
+    builder.add_edge("task_classifier", "cache_lookup")
 
     # Router → conditional
     builder.add_conditional_edges(
@@ -88,13 +89,11 @@ def build_graph():
     builder.add_edge("llm_call", END)
 
     # Compile with checkpointer for interrupt/resume support
-    checkpointer = MemorySaver()
+    conn = sqlite3.connect("tieredflow.db", check_same_thread=False)
+    checkpointer = SqliteSaver(conn)
     return builder.compile(
         checkpointer=checkpointer,
-        interrupt_before=[
-            "human_cache_decision",
-            "human_tier_override",
-        ],
+        interrupt_before=["human_cache_decision", "human_tier_override"],
     )
 
 

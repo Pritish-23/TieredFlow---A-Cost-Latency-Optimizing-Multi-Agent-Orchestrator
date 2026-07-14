@@ -9,19 +9,35 @@ from providers import get_provider
 logger = logging.getLogger(__name__)
 
 
-def llm_call_node(
-    state: TieredFlowState,
-) -> TieredFlowState:
+def llm_call_node(state: TieredFlowState) -> TieredFlowState:
     tier = state["selected_tier"]
     meta = MODELS[tier]
     provider = get_provider(tier)
 
     logger.info(f"[LLM] Calling {meta.model_id} (tier={tier})")
 
+    # ── Web search injection for real-time queries ─────────────────────────
+    from config.constants import TaskType
+    from tools.search_tool import get_search_tool
+
+    prompt = state["user_query"]
+    system = "You are a helpful, concise assistant."
+
+    if state.get("task_type") == TaskType.REALTIME_QA:
+        logger.info("[LLM] Real-time query detected — injecting web search results.")
+        search_tool = get_search_tool()
+        search_results = search_tool.search(prompt)
+        system = (
+            "You are a helpful, concise assistant with access to live web search results. "
+            "Use the search results below to answer the user's question accurately. "
+            "Always base your answer on the provided search results.\n\n"
+            f"Search Results:\n{search_results}"
+        )
+
     try:
         response = provider.call(
-            prompt=state["user_query"],
-            system="You are a helpful, concise assistant.",
+            prompt=prompt,
+            system=system,
             max_tokens=1024,
         )
     except Exception as e:

@@ -11,78 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 _TASK_PATTERNS: list[tuple[TaskType, list[str]]] = [
-    (
-        TaskType.CLASSIFICATION,
-        [
-            "classify",
-            "categorize",
-            "label",
-            "is this",
-            "what type",
-        ],
-    ),
-    (
-        TaskType.EXTRACTION,
-        [
-            "extract",
-            "pull out",
-            "find all",
-            "list all",
-            "get the",
-        ],
-    ),
-    (
-        TaskType.SUMMARIZATION,
-        [
-            "summarize",
-            "summary",
-            "tldr",
-            "brief",
-            "shorten",
-        ],
-    ),
-    (
-        TaskType.CODE_GENERATION,
-        [
-            "write code",
-            "implement",
-            "function",
-            "class",
-            "script",
-            "debug",
-        ],
-    ),
-    (
-        TaskType.REASONING,
-        [
-            "why",
-            "explain",
-            "analyze",
-            "compare",
-            "evaluate",
-            "reason",
-        ],
-    ),
-    (
-        TaskType.CREATIVE,
-        [
-            "write a story",
-            "poem",
-            "creative",
-            "imagine",
-            "generate",
-        ],
-    ),
-    (
-        TaskType.QA,
-        [
-            "what is",
-            "who is",
-            "when did",
-            "how do",
-            "define",
-        ],
-    ),
+    (TaskType.REALTIME_QA,     ["current", "latest", "today", "news", "right now", "recently", "this week", "price of", "weather"]),
+    (TaskType.CLASSIFICATION,  ["classify", "categorize", "label", "is this", "what type"]),
+    (TaskType.EXTRACTION,      ["extract", "pull out", "find all", "list all", "get the"]),
+    (TaskType.SUMMARIZATION,   ["summarize", "summary", "tldr", "brief", "shorten"]),
+    (TaskType.CODE_GENERATION, ["write code", "implement", "function", "class", "script", "debug"]),
+    (TaskType.REASONING,       ["why", "explain", "analyze", "compare", "evaluate", "reason"]),
+    (TaskType.CREATIVE,        ["write a story", "poem", "creative", "imagine", "generate"]),
+    (TaskType.QA,              ["what is", "who is", "when did", "how do", "define"]),
 ]
 
 

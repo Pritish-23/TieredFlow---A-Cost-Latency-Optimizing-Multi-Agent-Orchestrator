@@ -6,6 +6,7 @@ import uuid
 from config.settings import settings
 from core.graph import graph
 from core.state import initial_state
+from memory.store import get_store
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,6 +21,21 @@ def run_query(query: str, budget: float = None) -> dict:
 
     state = initial_state(query, session_id, budget)
     final = graph.invoke(state, config=config)
+
+    # Save to persistent store
+    store = get_store()
+    store.create_session(session_id)
+    store.save_message(
+        session_id=session_id,
+        user_query=query,
+        response=final.get("final_response", ""),
+        task_type=str(final.get("task_type", "")),
+        tier=str(final.get("selected_tier", "")),
+        model_id=str(final.get("llm_response", "")),
+        cost_usd=final.get("cost_usd") or 0.0,
+        latency_ms=final.get("latency_ms") or 0,
+        served_from_cache=final.get("served_from_cache", False),
+    )
 
     return final
 

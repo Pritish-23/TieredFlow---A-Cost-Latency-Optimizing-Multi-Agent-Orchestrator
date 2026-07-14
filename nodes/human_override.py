@@ -53,7 +53,7 @@ def human_cache_decision_node(
 def route_after_cache_hitl(state: TieredFlowState) -> str:
     if state.get("cache_user_decision") == "accept":
         return "end"
-    return "task_classifier"
+    return "router"
 
 
 def human_tier_override_node(
