@@ -2,6 +2,7 @@ import sqlite3
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
 
+from nodes.query_rewriter import query_rewriter_node
 from core.state import TieredFlowState
 from nodes.cache_node import (
     auto_serve_cache_node,
@@ -37,6 +38,7 @@ def build_graph():
     builder.add_node("router", router_node)
     builder.add_node("human_tier_override", human_tier_override_node)
     builder.add_node("llm_call", llm_call_node)
+    builder.add_node("query_rewriter", query_rewriter_node)
 
     # Entry point
     builder.add_edge(START, "guardrail")
@@ -48,13 +50,16 @@ def build_graph():
         {"cache_lookup": "task_classifier", "end": END},
     )
 
+    # Task classifier → cache lookup
+    builder.add_edge("task_classifier", "cache_lookup")
+
     # Cache lookup → conditional
     builder.add_conditional_edges(
         "cache_lookup",
         route_after_cache,
         {
-            "router": "router",
-            "auto_serve_cache": "auto_serve_cache",
+            "router":               "query_rewriter",
+            "auto_serve_cache":     "auto_serve_cache",
             "human_cache_decision": "human_cache_decision",
         },
     )
@@ -66,11 +71,11 @@ def build_graph():
     builder.add_conditional_edges(
         "human_cache_decision",
         route_after_cache_hitl,
-        {"end": END, "task_classifier": "task_classifier"},
+        {"end": END, "router": "query_rewriter"},
     )
 
-    # Task classifier → router
-    builder.add_edge("task_classifier", "cache_lookup")
+    # Query rewriter → router
+    builder.add_edge("query_rewriter", "router")
 
     # Router → conditional
     builder.add_conditional_edges(
@@ -78,7 +83,7 @@ def build_graph():
         route_after_router,
         {
             "human_tier_override": "human_tier_override",
-            "llm_call": "llm_call",
+            "llm_call":            "llm_call",
         },
     )
 
