@@ -10,7 +10,6 @@ class TieredFlowState(TypedDict):
     session_id: str
     original_query: Optional[str]
     rewritten_query: Optional[str]
-    system_prompt: Optional[str]
 
     # Guardrail
     guardrail_passed: Optional[bool]
@@ -37,6 +36,8 @@ class TieredFlowState(TypedDict):
     tokens_used_output: Optional[int]
     cost_usd: Optional[float]
     latency_ms: Optional[int]
+    system_prompt: Optional[str]
+    confidence_score: Optional[int]
 
     # Human override
     human_override_requested: bool
@@ -82,4 +83,5 @@ def initial_state(user_query: str, session_id: str, budget: float) -> TieredFlow
         total_calls=0,
         call_log=[],
         system_prompt=None,
+        confidence_score=None,  
     )

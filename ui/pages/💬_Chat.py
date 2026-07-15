@@ -65,7 +65,7 @@ for msg in st.session_state.messages:
 
         if msg["role"] == "assistant" and "meta" in msg:
             meta = msg["meta"]
-            cols = st.columns(5)
+            # cols = st.columns(5)
 
             task = str(meta.get("task_type", "—")).replace("TaskType.", "")
             tier = str(meta.get("selected_tier", "—")).replace("Tier.", "")
@@ -73,13 +73,23 @@ for msg in st.session_state.messages:
             latency = meta.get("latency_ms")
             cached = meta.get("served_from_cache", False)
 
+            score = msg.get("meta", {}).get("confidence_score")
+            if score is None:
+                confidence_badge = "⚪ Confidence: —"
+            elif score >= 8:
+                confidence_badge = f"🟢 Confidence: {score}/10"
+            elif score >= 5:
+                confidence_badge = f"🟡 Confidence: {score}/10"
+            else:
+                confidence_badge = f"🔴 Confidence: {score}/10"
+
+            cols = st.columns(6)
             cols[0].caption(f"🧠 **Task:** {task}")
             cols[1].caption(f"⚡ **Tier:** {tier}")
             cols[2].caption(f"💰 **Cost:** ${cost:.6f}")
-            cols[3].caption(
-                f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —"
-            )
+            cols[3].caption(f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —")
             cols[4].caption(f"{'🟢 Cache hit' if cached else '🔵 Fresh call'}")
+            cols[5].caption(confidence_badge)
 
 
 # ── Query input ───────────────────────────────────────────────────────────────
@@ -104,6 +114,12 @@ if query:
 
         with st.spinner("Routing query..."):
             result = graph.invoke(state, config=config)
+
+            # state_snapshot = graph.get_state(config)
+            # st.write(f"DEBUG snapshot confidence: {state_snapshot.values.get('confidence_score')}")
+            # st.write(f"DEBUG result confidence: {result.get('confidence_score')}")
+            # if state_snapshot and state_snapshot.values:
+            #     result = {**result, **state_snapshot.values}
 
         response = result.get("final_response", "No response.")
 
@@ -139,14 +155,24 @@ if query:
         latency = meta.get("latency_ms")
         cached = meta.get("served_from_cache", False)
 
-        cols = st.columns(5)
+        call_log = result.get("call_log", [])
+        score = call_log[-1].get("confidence_score") if call_log else None
+        if score is None:
+            confidence_badge = "⚪ Confidence: —"
+        elif score >= 8:
+            confidence_badge = f"🟢 Confidence: {score}/10"
+        elif score >= 5:
+            confidence_badge = f"🟡 Confidence: {score}/10"
+        else:
+            confidence_badge = f"🔴 Confidence: {score}/10"
+
+        cols = st.columns(6)
         cols[0].caption(f"🧠 **Task:** {task}")
         cols[1].caption(f"⚡ **Tier:** {tier}")
         cols[2].caption(f"💰 **Cost:** ${cost:.6f}")
-        cols[3].caption(
-            f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —"
-        )
+        cols[3].caption(f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —")
         cols[4].caption(f"{'🟢 Cache hit' if cached else '🔵 Fresh call'}")
+        cols[5].caption(confidence_badge)
 
     # Update session state
     st.session_state.total_cost += cost

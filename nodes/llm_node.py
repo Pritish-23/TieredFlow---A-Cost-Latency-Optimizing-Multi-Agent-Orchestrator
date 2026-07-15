@@ -105,6 +105,29 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
 
     new_total_calls = state["total_calls"] + 1
 
+    # ── Confidence scoring ─────────────────────────────────────────────────────
+    confidence_score = None
+    try:
+        from providers.groq_provider import GroqProvider
+        scorer = GroqProvider(model_id="llama-3.1-8b-instant")
+        score_response = scorer.call(
+            prompt=(
+                f"Question: {state['user_query']}\n\n"
+                f"Answer: {response.content}\n\n"
+                "Rate the confidence of this answer on a scale of 1-10. "
+                "Return ONLY a single integer between 1 and 10. Nothing else."
+            ),
+            system="You are a response quality evaluator. Return only a number 1-10.",
+            max_tokens=5,
+        )
+        score_text = score_response.content.strip()
+        confidence_score = int("".join(filter(str.isdigit, score_text)) or "0")
+        confidence_score = max(1, min(10, confidence_score))
+        logger.info(f"[LLM] Confidence score: {confidence_score}/10")
+    except Exception as e:
+        logger.warning(f"[LLM] Confidence scoring failed: {e}")
+
+    # ── Build log entry ────────────────────────────────────────────────────────
     log_entry = {
         "call_number": new_total_calls,
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -118,6 +141,7 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
         "cost_usd": round(cost_usd, 6),
         "latency_ms": response.latency_ms,
         "served_from_cache": False,
+        "confidence_score": confidence_score,
     }
 
     logger.info(
@@ -125,6 +149,7 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
         f"cost=${cost_usd:.6f} latency={response.latency_ms}ms"
     )
 
+    # ── Store in semantic cache ────────────────────────────────────────────────
     cache = get_cache()
     cache.store(
         query=state["user_query"],
@@ -140,7 +165,8 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
         "tokens_used_output": response.output_tokens,
         "cost_usd": round(cost_usd, 6),
         "latency_ms": response.latency_ms,
-        "system_prompt": system,  # ← add this
+        "system_prompt": system,
+        "confidence_score": confidence_score,
         "budget_remaining_usd": max(state["budget_remaining_usd"] - cost_usd, 0.0),
         "total_cost_usd": round(state["total_cost_usd"] + cost_usd, 6),
         "total_calls": new_total_calls,
