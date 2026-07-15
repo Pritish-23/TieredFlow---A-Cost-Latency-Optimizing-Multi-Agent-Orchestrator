@@ -109,6 +109,7 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
     confidence_score = None
     try:
         from providers.groq_provider import GroqProvider
+
         scorer = GroqProvider(model_id="llama-3.1-8b-instant")
         score_response = scorer.call(
             prompt=(

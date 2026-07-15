@@ -87,7 +87,9 @@ for msg in st.session_state.messages:
             cols[0].caption(f"🧠 **Task:** {task}")
             cols[1].caption(f"⚡ **Tier:** {tier}")
             cols[2].caption(f"💰 **Cost:** ${cost:.6f}")
-            cols[3].caption(f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —")
+            cols[3].caption(
+                f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —"
+            )
             cols[4].caption(f"{'🟢 Cache hit' if cached else '🔵 Fresh call'}")
             cols[5].caption(confidence_badge)
 
@@ -170,7 +172,9 @@ if query:
         cols[0].caption(f"🧠 **Task:** {task}")
         cols[1].caption(f"⚡ **Tier:** {tier}")
         cols[2].caption(f"💰 **Cost:** ${cost:.6f}")
-        cols[3].caption(f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —")
+        cols[3].caption(
+            f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —"
+        )
         cols[4].caption(f"{'🟢 Cache hit' if cached else '🔵 Fresh call'}")
         cols[5].caption(confidence_badge)
 

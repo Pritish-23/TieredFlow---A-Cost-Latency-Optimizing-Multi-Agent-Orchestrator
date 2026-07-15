@@ -83,5 +83,5 @@ def initial_state(user_query: str, session_id: str, budget: float) -> TieredFlow
         total_calls=0,
         call_log=[],
         system_prompt=None,
-        confidence_score=None,  
+        confidence_score=None,
     )
