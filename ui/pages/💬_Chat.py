@@ -176,7 +176,9 @@ if st.session_state.pending_rewrite:
     pending = st.session_state.pending_rewrite
 
     with st.chat_message("assistant"):
-        st.info("🔄 The query rewriter suggests a clearer version. Which would you like to use?")
+        st.info(
+            "🔄 The query rewriter suggests a clearer version. Which would you like to use?"
+        )
         col1, col2 = st.columns(2)
         with col1:
             st.caption("**Original**")
@@ -269,9 +271,11 @@ if st.session_state.pending_tier_override:
         chosen = st.radio(
             "Choose tier:",
             options=tier_options,
-            index=tier_options.index(str(pending["current_tier"]).replace("Tier.", ""))
-            if str(pending["current_tier"]).replace("Tier.", "") in tier_options
-            else 0,
+            index=(
+                tier_options.index(str(pending["current_tier"]).replace("Tier.", ""))
+                if str(pending["current_tier"]).replace("Tier.", "") in tier_options
+                else 0
+            ),
             key=f"tier_choice_{pending['thread_id']}",
         )
 
@@ -302,13 +306,17 @@ if st.session_state.get("_last_result"):
 
             tier = result.get("selected_tier")
             provider = get_provider(tier)
-            system = result.get("system_prompt") or "You are a helpful, concise assistant."
+            system = (
+                result.get("system_prompt") or "You are a helpful, concise assistant."
+            )
             prompt = result.get("rewritten_query") or query
 
             history = result.get("conversation_history", [])
 
             def stream_response():
-                for chunk in provider.stream(prompt=prompt, system=system, max_tokens=1024, history=history):
+                for chunk in provider.stream(
+                    prompt=prompt, system=system, max_tokens=1024, history=history
+                ):
                     yield chunk
 
             response = st.write_stream(stream_response())
@@ -335,12 +343,16 @@ if st.session_state.get("_last_result"):
         cols[0].caption(f"🧠 **Task:** {task}")
         cols[1].caption(f"⚡ **Tier:** {tier}")
         cols[2].caption(f"💰 **Cost:** ${cost:.6f}")
-        cols[3].caption(f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —")
+        cols[3].caption(
+            f"⏱️ **Latency:** {latency}ms" if latency else "⏱️ **Latency:** —"
+        )
         cols[4].caption(f"{'🟢 Cache hit' if cached else '🔵 Fresh call'}")
         cols[5].caption(confidence_badge)
 
     st.session_state.total_cost += cost
-    st.session_state.messages.append({"role": "assistant", "content": response, "meta": result})
+    st.session_state.messages.append(
+        {"role": "assistant", "content": response, "meta": result}
+    )
 
     store = get_store()
     store.create_session(st.session_state.session_id)

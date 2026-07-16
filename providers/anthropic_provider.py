@@ -1,6 +1,8 @@
 import time
-import anthropic
 from typing import Iterator, Optional
+
+import anthropic
+
 from config.settings import settings
 from providers.base import BaseProvider, LLMResponse
 
@@ -19,7 +21,13 @@ class AnthropicProvider(BaseProvider):
         messages.append({"role": "user", "content": prompt})
         return messages
 
-    def call(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> LLMResponse:
+    def call(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> LLMResponse:
         start = time.time()
 
         message = self._client.messages.create(
@@ -40,7 +48,13 @@ class AnthropicProvider(BaseProvider):
             provider="anthropic",
         )
 
-    def stream(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> Iterator[str]:
+    def stream(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> Iterator[str]:
         with self._client.messages.stream(
             model=self.model_id,
             max_tokens=max_tokens,

@@ -53,14 +53,22 @@ class TieredFlowState(TypedDict):
     call_log: list[dict]
 
     # Query
-    query_mode: Optional[str] 
+    query_mode: Optional[str]
     rewrite_pending_decision: Optional[bool]
 
     # Conversation History
-    conversation_history: Optional[list]   # ← add this: list of {"role": ..., "content": ...}
+    conversation_history: Optional[
+        list
+    ]  # ← add this: list of {"role": ..., "content": ...}
 
 
-def initial_state(user_query: str, session_id: str, budget: float, query_mode: str = "auto", conversation_history: list = None) -> TieredFlowState:
+def initial_state(
+    user_query: str,
+    session_id: str,
+    budget: float,
+    query_mode: str = "auto",
+    conversation_history: list = None,
+) -> TieredFlowState:
     return TieredFlowState(
         user_query=user_query,
         session_id=session_id,
@@ -91,7 +99,7 @@ def initial_state(user_query: str, session_id: str, budget: float, query_mode: s
         call_log=[],
         system_prompt=None,
         confidence_score=None,
-        query_mode=query_mode, 
+        query_mode=query_mode,
         rewrite_pending_decision=None,
         conversation_history=conversation_history or [],
     )

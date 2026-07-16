@@ -16,13 +16,22 @@ class LLMResponse:
 class BaseProvider(ABC):
 
     @abstractmethod
-    def call(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> LLMResponse:
-        ...
+    def call(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> LLMResponse: ...
 
     @abstractmethod
-    def stream(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> Iterator[str]:
-        ...
+    def stream(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> Iterator[str]: ...
 
     @abstractmethod
-    def is_available(self) -> bool:
-        ...
+    def is_available(self) -> bool: ...

@@ -44,7 +44,9 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
 
         # Validate — if nothing found, fall back to web search + LLM knowledge combined
         if "No Wikipedia article found" in results or "failed" in results.lower():
-            logger.warning("[LLM] Wikipedia returned no results, falling back to web search + LLM knowledge.")
+            logger.warning(
+                "[LLM] Wikipedia returned no results, falling back to web search + LLM knowledge."
+            )
             search_results = get_search_tool().search(prompt)
             system = (
                 "You are a helpful assistant. Wikipedia had no dedicated article for this query. "

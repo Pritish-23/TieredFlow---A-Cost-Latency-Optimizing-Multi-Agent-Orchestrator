@@ -37,6 +37,7 @@ def export_session_to_csv(call_log: list, session_id: str) -> str:
 
     return output.getvalue()
 
+
 def export_session_messages_to_csv(messages: list, session_id: str) -> str:
     """
     Converts a list of Message objects (from ConversationStore) into CSV.
@@ -60,20 +61,23 @@ def export_session_messages_to_csv(messages: list, session_id: str) -> str:
     writer.writeheader()
 
     for msg in messages:
-        writer.writerow({
-            "message_id": msg.message_id,
-            "timestamp": msg.timestamp,
-            "user_query": msg.user_query,
-            "response": msg.response,
-            "task_type": str(msg.task_type).replace("TaskType.", ""),
-            "tier": str(msg.tier).replace("Tier.", ""),
-            "model_id": msg.model_id,
-            "cost_usd": msg.cost_usd,
-            "latency_ms": msg.latency_ms,
-            "served_from_cache": msg.served_from_cache,
-        })
+        writer.writerow(
+            {
+                "message_id": msg.message_id,
+                "timestamp": msg.timestamp,
+                "user_query": msg.user_query,
+                "response": msg.response,
+                "task_type": str(msg.task_type).replace("TaskType.", ""),
+                "tier": str(msg.tier).replace("Tier.", ""),
+                "model_id": msg.model_id,
+                "cost_usd": msg.cost_usd,
+                "latency_ms": msg.latency_ms,
+                "served_from_cache": msg.served_from_cache,
+            }
+        )
 
     return output.getvalue()
+
 
 def export_full_session_report(
     session_id: str,
@@ -86,7 +90,7 @@ def export_full_session_report(
     """
     output = io.StringIO()
 
-    output.write(f"TieredFlow Session Report\n")
+    output.write("TieredFlow Session Report\n")
     output.write(f"Session ID,{session_id}\n")
     output.write(f"Generated At,{datetime.now().isoformat()}\n")
     output.write(f"Total Calls,{total_calls}\n")

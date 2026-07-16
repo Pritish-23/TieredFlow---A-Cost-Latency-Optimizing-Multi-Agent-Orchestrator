@@ -1,6 +1,8 @@
 import time
 from typing import Iterator, Optional
+
 from groq import Groq
+
 from config.settings import settings
 from providers.base import BaseProvider, LLMResponse
 
@@ -11,15 +13,25 @@ class GroqProvider(BaseProvider):
         self.model_id = model_id
         self._client = Groq(api_key=settings.groq_api_key)
 
-    def _build_messages(self, prompt: str, system: str, history: Optional[list] = None) -> list:
-        messages = [{"role": "system", "content": system or "You are a helpful assistant."}]
+    def _build_messages(
+        self, prompt: str, system: str, history: Optional[list] = None
+    ) -> list:
+        messages = [
+            {"role": "system", "content": system or "You are a helpful assistant."}
+        ]
         if history:
             for msg in history:
                 messages.append({"role": msg["role"], "content": msg["content"]})
         messages.append({"role": "user", "content": prompt})
         return messages
 
-    def call(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> LLMResponse:
+    def call(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> LLMResponse:
         start = time.time()
 
         response = self._client.chat.completions.create(
@@ -40,7 +52,13 @@ class GroqProvider(BaseProvider):
             provider="groq",
         )
 
-    def stream(self, prompt: str, system: str = "", max_tokens: int = 1024, history: Optional[list] = None) -> Iterator[str]:
+    def stream(
+        self,
+        prompt: str,
+        system: str = "",
+        max_tokens: int = 1024,
+        history: Optional[list] = None,
+    ) -> Iterator[str]:
         response = self._client.chat.completions.create(
             model=self.model_id,
             max_tokens=max_tokens,

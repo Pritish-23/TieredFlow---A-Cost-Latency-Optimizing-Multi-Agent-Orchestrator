@@ -102,9 +102,9 @@ st.divider()
 st.subheader("🔄 Query Rewriting")
 
 query_mode_labels = {
-    "auto":     "Auto (always use rewritten query)",
+    "auto": "Auto (always use rewritten query)",
     "original": "Always use original query (skip rewriting)",
-    "ask":      "Ask me each time",
+    "ask": "Ask me each time",
 }
 
 current_mode = st.session_state.get("query_mode", "auto")

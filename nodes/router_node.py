@@ -110,6 +110,7 @@ def task_classifier_node(state: TieredFlowState) -> TieredFlowState:
     # ── LLM classification ────────────────────────────────────────────────────
     try:
         from providers.groq_provider import GroqProvider
+
         classifier = GroqProvider(model_id="llama-3.1-8b-instant")
         response = classifier.call(
             prompt=CLASSIFY_PROMPT,
@@ -121,22 +122,24 @@ def task_classifier_node(state: TieredFlowState) -> TieredFlowState:
 
         # Match to TaskType
         type_map = {
-            "REALTIME_QA":     TaskType.REALTIME_QA,
-            "WEATHER":         TaskType.WEATHER,
-            "DATETIME":        TaskType.DATETIME,
-            "CALCULATOR":      TaskType.CALCULATOR,
-            "WIKIPEDIA":       TaskType.WIKIPEDIA,
-            "SUMMARIZATION":   TaskType.SUMMARIZATION,
+            "REALTIME_QA": TaskType.REALTIME_QA,
+            "WEATHER": TaskType.WEATHER,
+            "DATETIME": TaskType.DATETIME,
+            "CALCULATOR": TaskType.CALCULATOR,
+            "WIKIPEDIA": TaskType.WIKIPEDIA,
+            "SUMMARIZATION": TaskType.SUMMARIZATION,
             "CODE_GENERATION": TaskType.CODE_GENERATION,
-            "REASONING":       TaskType.REASONING,
-            "CREATIVE":        TaskType.CREATIVE,
-            "QA":              TaskType.QA,
-            "UNKNOWN":         TaskType.UNKNOWN,
+            "REASONING": TaskType.REASONING,
+            "CREATIVE": TaskType.CREATIVE,
+            "QA": TaskType.QA,
+            "UNKNOWN": TaskType.UNKNOWN,
         }
         task_type = type_map.get(raw)
 
     except Exception as e:
-        logger.warning(f"[Classifier] LLM classification failed: {e}. Falling back to keywords.")
+        logger.warning(
+            f"[Classifier] LLM classification failed: {e}. Falling back to keywords."
+        )
 
     # ── Keyword fallback ──────────────────────────────────────────────────────
     if task_type is None:

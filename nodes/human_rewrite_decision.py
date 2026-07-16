@@ -1,5 +1,7 @@
 import logging
+
 from langgraph.types import interrupt
+
 from core.state import TieredFlowState
 
 logger = logging.getLogger(__name__)
@@ -11,10 +13,12 @@ def human_rewrite_decision_node(state: TieredFlowState) -> TieredFlowState:
     'Use original query or rewritten query?'
     Resumes with state['rewrite_choice'] set to 'original' or 'rewritten'.
     """
-    decision = interrupt({
-        "original_query": state["original_query"],
-        "rewritten_query": state["rewritten_query"],
-    })
+    decision = interrupt(
+        {
+            "original_query": state["original_query"],
+            "rewritten_query": state["rewritten_query"],
+        }
+    )
 
     choice = decision.get("choice", "rewritten")  # default to rewritten if unclear
     logger.info(f"[RewriteDecision] User chose: {choice}")

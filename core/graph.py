@@ -4,10 +4,6 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
 
 from core.state import TieredFlowState
-from nodes.human_rewrite_decision import ( 
-    human_rewrite_decision_node, 
-    route_after_rewrite 
-)
 from nodes.cache_node import (
     auto_serve_cache_node,
     cache_lookup_node,
@@ -21,6 +17,10 @@ from nodes.human_override import (
     human_cache_decision_node,
     human_tier_override_node,
     route_after_cache_hitl,
+)
+from nodes.human_rewrite_decision import (
+    human_rewrite_decision_node,
+    route_after_rewrite,
 )
 from nodes.llm_node import llm_call_node
 from nodes.query_rewriter import query_rewriter_node
@@ -113,7 +113,11 @@ def build_graph():
     checkpointer = SqliteSaver(conn)
     return builder.compile(
         checkpointer=checkpointer,
-        interrupt_before=["human_cache_decision", "human_tier_override", "human_rewrite_decision"],
+        interrupt_before=[
+            "human_cache_decision",
+            "human_tier_override",
+            "human_rewrite_decision",
+        ],
     )
 
 
