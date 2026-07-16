@@ -3,6 +3,7 @@ import plotly.express as px
 import streamlit as st
 
 from memory.store import get_store
+from utils.export import export_session_messages_to_csv
 
 st.set_page_config(page_title="History — TieredFlow", page_icon="🗄️", layout="wide")
 
@@ -117,6 +118,20 @@ for session in sessions:
                 cols[4].caption(
                     f"{'🟢 Cache hit' if msg.served_from_cache else '🔵 Fresh call'}"
                 )
+
+        # ── Export session ─────────────────────────────────────────────────────
+
+        st.divider()
+
+        csv_data = export_session_messages_to_csv(messages, session.session_id)
+        st.download_button(
+            label="⬇️ Export Session (CSV)",
+            data=csv_data,
+            file_name=f"tieredflow_history_{session.session_id}.csv",
+            mime="text/csv",
+            key=f"export_{session.session_id}",
+            use_container_width=True,
+        )
 
         # ── Delete session ─────────────────────────────────────────────────────
 

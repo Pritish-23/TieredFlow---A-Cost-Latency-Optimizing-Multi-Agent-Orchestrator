@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from utils.export import export_full_session_report
 
 st.set_page_config(page_title="Analytics — TieredFlow", page_icon="📊", layout="wide")
 
@@ -46,7 +47,37 @@ if not records:
 
 df = pd.DataFrame(records)
 
+# ── Report Downloader ───────────────────────────────────────────────────────────────
+st.subheader("📥 Export Session Report")
+
+call_log = st.session_state.get("messages", [])
+# Pull call_log entries from the actual graph result metadata stored in messages
+all_call_logs = []
+for msg in st.session_state.get("messages", []):
+    if msg.get("role") == "assistant" and "meta" in msg:
+        entries = msg["meta"].get("call_log", [])
+        all_call_logs.extend(entries)
+
+if all_call_logs:
+    csv_data = export_full_session_report(
+        session_id=st.session_state.session_id,
+        call_log=all_call_logs,
+        total_cost=st.session_state.total_cost,
+        total_calls=len(all_call_logs),
+    )
+
+    st.download_button(
+        label="⬇️ Download Session Report (CSV)",
+        data=csv_data,
+        file_name=f"tieredflow_session_{st.session_state.session_id}.csv",
+        mime="text/csv",
+        use_container_width=True,
+    )
+else:
+    st.caption("No calls yet in this session to export.")
+
 # ── Top metrics ───────────────────────────────────────────────────────────────
+st.divider()
 
 m1, m2, m3, m4, m5 = st.columns(5)
 m1.metric("Total Calls", len(df))
