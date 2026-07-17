@@ -1,14 +1,14 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 from memory.store import get_store
 from utils.export import export_session_messages_to_csv
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 st.set_page_config(page_title="History — TieredFlow", page_icon="🗄️", layout="wide")
 

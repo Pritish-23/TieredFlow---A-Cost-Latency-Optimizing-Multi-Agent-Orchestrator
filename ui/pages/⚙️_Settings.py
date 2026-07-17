@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 import os
 
 import pandas as pd
@@ -5,11 +10,6 @@ import streamlit as st
 
 from config.constants import MODELS
 from memory.store import get_store
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 st.set_page_config(page_title="Settings — TieredFlow", page_icon="⚙️", layout="wide")
 
