@@ -1,4 +1,5 @@
 import sqlite3
+from pathlib import Path
 
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
@@ -30,6 +31,7 @@ from nodes.router_node import (
     task_classifier_node,
 )
 
+DB_PATH = str(Path(__file__).resolve().parent.parent / "tieredflow.db")
 
 def build_graph():
     builder = StateGraph(TieredFlowState)
@@ -109,7 +111,7 @@ def build_graph():
     builder.add_edge("llm_call", END)
 
     # Compile with checkpointer for interrupt/resume support
-    conn = sqlite3.connect("tieredflow.db", check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     checkpointer = SqliteSaver(conn)
     return builder.compile(
         checkpointer=checkpointer,
