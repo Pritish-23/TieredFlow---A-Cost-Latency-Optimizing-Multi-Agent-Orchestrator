@@ -303,7 +303,7 @@ if st.session_state.get("_last_result"):
     query = st.session_state._last_query
 
     with st.chat_message("assistant"):
-        response = result.get("final_response", "No response.")
+        response = result.get("final_response") or "⚠️ No response was generated. Please try rephrasing your query."
 
         if result.get("served_from_cache"):
             st.markdown(response)
