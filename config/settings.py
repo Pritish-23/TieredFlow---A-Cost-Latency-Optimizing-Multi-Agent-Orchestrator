@@ -1,8 +1,32 @@
+import os
+
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
 )
+
+
+def _load_streamlit_secrets_into_env():
+    """
+    On Streamlit Community Cloud, secrets are provided via st.secrets
+    (backed by a TOML file), not real environment variables.
+    This copies them into os.environ so pydantic-settings can pick them up
+    the same way it does locally via .env — no code branching needed elsewhere.
+    """
+    try:
+        import streamlit as st
+
+        if hasattr(st, "secrets"):
+            for key in st.secrets.keys():
+                if key not in os.environ:
+                    os.environ[key] = str(st.secrets[key])
+    except Exception:
+        # Not running inside Streamlit, or no secrets configured — fine, .env takes over
+        pass
+
+
+_load_streamlit_secrets_into_env()
 
 
 class Settings(BaseSettings):
