@@ -1,4 +1,5 @@
 import uuid
+import time
 
 import streamlit as st
 from langgraph.types import Command
@@ -301,25 +302,17 @@ if st.session_state.get("_last_result"):
 
         if result.get("served_from_cache"):
             st.markdown(response)
+
         else:
-            from providers import get_provider
+            # Simulate streaming using the response we already have
+            # (avoids a redundant second LLM API call)
+            def fake_stream():
+                words = response.split(" ")
+                for word in words:
+                    yield word + " "
+                    time.sleep(0.015)  # tune this for typing speed
 
-            tier = result.get("selected_tier")
-            provider = get_provider(tier)
-            system = (
-                result.get("system_prompt") or "You are a helpful, concise assistant."
-            )
-            prompt = result.get("rewritten_query") or query
-
-            history = result.get("conversation_history", [])
-
-            def stream_response():
-                for chunk in provider.stream(
-                    prompt=prompt, system=system, max_tokens=1024, history=history
-                ):
-                    yield chunk
-
-            response = st.write_stream(stream_response())
+            st.write_stream(fake_stream())
 
         meta = result
         task = str(meta.get("task_type", "—")).replace("TaskType.", "")

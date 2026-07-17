@@ -2,7 +2,7 @@ import logging
 from datetime import datetime, timezone
 
 from cache.semantic_cache import get_cache
-from config.constants import MODELS
+from config.constants import MODELS, TaskType
 from core.state import TieredFlowState
 from providers import get_provider
 
@@ -126,26 +126,30 @@ def llm_call_node(state: TieredFlowState) -> TieredFlowState:
 
     # ── Confidence scoring ─────────────────────────────────────────────────────
     confidence_score = None
-    try:
-        from providers.groq_provider import GroqProvider
+    SKIP_SCORING_TASKS = {TaskType.CALCULATOR, TaskType.DATETIME, TaskType.WEATHER}
 
-        scorer = GroqProvider(model_id="llama-3.1-8b-instant")
-        score_response = scorer.call(
-            prompt=(
-                f"Question: {state['user_query']}\n\n"
-                f"Answer: {response.content}\n\n"
-                "Rate the confidence of this answer on a scale of 1-10. "
-                "Return ONLY a single integer between 1 and 10. Nothing else."
-            ),
-            system="You are a response quality evaluator. Return only a number 1-10.",
-            max_tokens=5,
-        )
-        score_text = score_response.content.strip()
-        confidence_score = int("".join(filter(str.isdigit, score_text)) or "0")
-        confidence_score = max(1, min(10, confidence_score))
-        logger.info(f"[LLM] Confidence score: {confidence_score}/10")
-    except Exception as e:
-        logger.warning(f"[LLM] Confidence scoring failed: {e}")
+    if task_type not in SKIP_SCORING_TASKS:
+        try:
+            from providers.groq_provider import GroqProvider
+            scorer = GroqProvider(model_id="llama-3.1-8b-instant")
+            score_response = scorer.call(
+                prompt=(
+                    f"Question: {state['user_query']}\n\n"
+                    f"Answer: {response.content}\n\n"
+                    "Rate the confidence of this answer on a scale of 1-10. "
+                    "Return ONLY a single integer between 1 and 10. Nothing else."
+                ),
+                system="You are a response quality evaluator. Return only a number 1-10.",
+                max_tokens=5,
+            )
+            score_text = score_response.content.strip()
+            confidence_score = int("".join(filter(str.isdigit, score_text)) or "0")
+            confidence_score = max(1, min(10, confidence_score))
+            logger.info(f"[LLM] Confidence score: {confidence_score}/10")
+        except Exception as e:
+            logger.warning(f"[LLM] Confidence scoring failed: {e}")
+    else:
+        logger.info(f"[LLM] Skipping confidence scoring for task type: {task_type}")
 
     # ── Build log entry ────────────────────────────────────────────────────────
     log_entry = {
