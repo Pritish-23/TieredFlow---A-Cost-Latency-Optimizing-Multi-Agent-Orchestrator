@@ -136,10 +136,11 @@ class ConversationStore:
 
     def get_all_sessions(self) -> list[Session]:
         """Return all sessions ordered by most recent activity."""
+        self._init_db()  # ensure tables exist, in case of race conditions across pages
         with sqlite3.connect(self.db_path) as conn:
             rows = conn.execute("""
                 SELECT session_id, started_at, last_active,
-                       total_cost_usd, total_messages
+                    total_cost_usd, total_messages
                 FROM sessions
                 ORDER BY last_active DESC
             """).fetchall()
@@ -147,12 +148,13 @@ class ConversationStore:
 
     def get_session_messages(self, session_id: str) -> list[Message]:
         """Return all messages for a given session."""
+        self._init_db()  # ensure tables exist
         with sqlite3.connect(self.db_path) as conn:
             rows = conn.execute(
                 """
                 SELECT message_id, session_id, user_query, response,
-                       task_type, tier, model_id, cost_usd, latency_ms,
-                       served_from_cache, timestamp
+                    task_type, tier, model_id, cost_usd, latency_ms,
+                    served_from_cache, timestamp
                 FROM messages
                 WHERE session_id = ?
                 ORDER BY message_id ASC
