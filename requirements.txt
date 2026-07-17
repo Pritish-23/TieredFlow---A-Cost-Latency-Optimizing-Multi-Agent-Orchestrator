@@ -27,3 +27,5 @@ langgraph-checkpoint-sqlite
 
 wikipedia
 wikipedia-api
+
+plotly

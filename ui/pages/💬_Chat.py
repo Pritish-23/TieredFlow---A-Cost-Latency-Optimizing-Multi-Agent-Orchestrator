@@ -9,6 +9,11 @@ from core.graph import graph
 from core.state import initial_state
 from memory.store import get_store
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 st.set_page_config(page_title="Chat — TieredFlow", page_icon="💬", layout="wide")
 
 # ── Session state init ────────────────────────────────────────────────────────

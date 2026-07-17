@@ -1,5 +1,10 @@
 import streamlit as st
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 st.set_page_config(
     page_title="TieredFlow",
     page_icon="🎛️",
