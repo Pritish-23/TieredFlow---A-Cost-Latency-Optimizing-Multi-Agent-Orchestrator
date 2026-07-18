@@ -230,7 +230,7 @@ Full breakdown available in [`eval/results/eval_results.csv`](eval/results/eval_
 | | |
 |---|---|
 | **Landing page** — quick nav to all four pages | **Chat — empty state** with example prompts |
-| ![Landing](docs/screenshots/01_landing.png) | ![Chat empty](docs/screenshots/04_chat_empty.png) |
+| ![Landing](docs/screenshots/01_landing_page.png) | ![Chat empty](docs/screenshots/04_chat_empty.png) |
 | **HITL — query rewrite decision** — user chooses original vs. rewritten query before any cost is incurred | **Chat — fresh response** with full routing transparency |
 | ![Rewrite decision](docs/screenshots/05_rewrite_decision.png) | ![Chat response](docs/screenshots/06_chat_response.png) |
 | **Analytics dashboard** — cost, tier distribution, latency, and cache hit rate, all live | **History** — per-session breakdown with full conversation replay |
