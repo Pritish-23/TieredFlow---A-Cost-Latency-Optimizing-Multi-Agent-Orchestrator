@@ -77,6 +77,29 @@ st.title("💬 Chat")
 st.caption(f"Session: `{st.session_state.session_id}`")
 st.divider()
 
+# ── Empty state greeting ────────────────────────────────────────────────────
+if not st.session_state.messages:
+    st.markdown("""
+    <div style="text-align: center; padding: 60px 20px; opacity: 0.85;">
+        <div style="font-size: 48px; margin-bottom: 16px;">🎛️</div>
+        <div style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">
+            Welcome to TieredFlow
+        </div>
+        <div style="font-size: 15px; opacity: 0.7; max-width: 480px; margin: 0 auto;">
+            Ask anything — I'll route your question to the most cost-effective model,
+            check the cache, or pull in the right tool (search, Wikipedia, weather, and more).
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.info("💡 **Try:** \"What is deep learning?\"")
+    with col2:
+        st.info("🧮 **Try:** \"Calculate 45 * 12 + 8\"")
+    with col3:
+        st.info("🌤️ **Try:** \"What's the weather in Mumbai?\"")
+
 
 # ── Chat history ──────────────────────────────────────────────────────────────
 
